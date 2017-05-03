@@ -4,7 +4,6 @@ MAINTAINER PEdro Arthur Duarte (aka JEdi)
 
 ENV ZOOKEEPER_VERSION 3.4.9
 
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 ENV ZK_HOME   /opt/zookeeper-${ZOOKEEPER_VERSION}
 
