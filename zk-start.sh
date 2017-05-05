@@ -1,4 +1,6 @@
-sed -i -r 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' $ZK_HOME/conf/log4j.properties
-sed -i -r 's|#autopurge|autopurge|g' $ZK_HOME/conf/zoo.cfg
+#!/bin/bash
 
-/opt/zookeeper-3.4.9/bin/zkServer.sh start-foreground
+sed -i -r 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' "$ZK_HOME/conf/log4j.properties"
+sed -i -r 's|#autopurge|autopurge|g' "$ZK_HOME/conf/zoo.cfg"
+
+"$ZK_HOME/bin/zkServer.sh" start-foreground
