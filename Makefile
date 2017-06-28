@@ -1,6 +1,6 @@
 
 OUTPUT  = pedroarthur/zookeeper-4k8s
-VERSION = 3.4.9
+VERSION = 3.4.9-1
 
 all: docker.build
 

@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Sometimes, it is useful to debug, right? =D
+if [[ $ZK_4K8S_DEBUG == true ]]
+then
+  set -x
+fi
+
+# Trapping signals in case user want to stop while
+# we are waiting # the ensemble to from
 trap 'exit 1' HUP INT QUIT TERM
 
 QUERY_SERVER=( )
@@ -105,5 +113,28 @@ fi
 # For example, 10.202.101.1 becomes 102021011
 awk -F '.' '{ print $1$2$3$4 }' <<< "${ZK_INSTANCE_IP}" > "${ZK_DATA}/myid"
 
-exec "${@}"
+# Using the variables USR_ID and GRP_ID to run zookeeper in order
+# to provide a way to users to keep ZK_HOME and ZK_DATA with
+# useful permissions
+uid_gid="${USR_ID:=0}:${GRP_ID:=0}"
+
+# Asserting USR_ID is a number
+if ! grep -qsP '[0-9]+' <<< "${USR_ID}"
+then
+  echo "User ID must be numeric (found ${USR_ID})"
+  exit 2
+fi
+
+# Asserting GRP_ID is a number
+if ! grep -qsP '[0-9]+' <<< "${GRP_ID}"
+then
+  echo "Group ID must be numeric (found ${GRP_ID})"
+  exit 4
+fi
+
+chown -R "$uid_gid" "${ZK_HOME}" "${ZK_DATA}"
+
+# Running with sudo provides the mechanism to
+# keep sane file permissions
+exec sudo -E -u "#${USR_ID}" -g "#${GRP_ID}" "${@}"
 

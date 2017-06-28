@@ -17,7 +17,7 @@ Here follows a sample `spec` for this image:
     spec:
       containers:
         - name: zookeeper
-          image: pedroarthur/zookeeper-4k8s:3.4.9
+          image: pedroarthur/zookeeper-4k8s:3.4.9-1
           env:
             - name: SERVICE_NAME
               value: zoo.default.svc.cluster.local
@@ -27,6 +27,17 @@ Here follows a sample `spec` for this image:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+
+Running zookeeper with specific UID and GROUPS
+----------------------------------------------
+
+When zookeeper is part of a CI/CD infrastructure, it might be interesting to snapshot the contents of `ZK_DATA` in order to accelerate bootstrap time. A problem with this approach is that new logs will be written with root's `UID` and `GROUPS`, making it harder the workspace wipe out procedure.
+
+With this image, one can avoid permissions problems by setting the variable `USR_ID` and `GRP_ID` with the values of `UID` and `GROUPS` of the user:
+
+    docker run --rm -e USR_ID=$UID -e GRP_ID=$GROUPS pedroarthur/zookeeper-4k8s
+
+Effectively, this will translate to `sudo -E -u #$USR_ID -g #$GRP_ID "${CMD[@]}"`.
 
 TODO
 ----
